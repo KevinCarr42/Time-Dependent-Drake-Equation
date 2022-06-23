@@ -10,10 +10,29 @@ import matplotlib as mpl
 import seaborn as sns
 
 
+### Parameters, Constants, and Pseudo-constants
+    
+def params_set(default_params):
+    """
+    resets params to default
+    """
+    return default_params.copy()
+
+def params_rand(random_dict_of_lists):
+    """
+    randomises params
+    """
+    output_dict = {}
+    for key in random_dict_of_lists:
+        output_dict[key] = np.random.choice(random_dict_of_lists[key])
+    
+    return output_dict
+    
+
 
 
 ### The Original Drake Equation
-def Drake(Rs, fp, ne, fl, fi, fc, L):
+def Drake(**kwargs):
     """
     The Drake Equation
     N = number of civilizations with which humans could communicate
@@ -25,10 +44,21 @@ def Drake(Rs, fp, ne, fl, fi, fc, L):
     fc = fraction of intelligent civilizations that develop communication
     L = mean length of time that civilizations can communicate
     """
-    return round(Rs * fp * ne * fl * fi * fc * L)
+    return round(kwargs['RS'] * kwargs['FP'] * kwargs['NE'] * kwargs['FL'] * kwargs['FI'] * kwargs['FC'] * kwargs['L'])
 
 
 ### Custom Functions ###
+
+
+
+
+
+
+### HERE BELOW: find and replace const -> kwargs['const'] and add **kwargs to all func
+
+
+
+
 
 # number of stars
 def star_formation(current_year, num_stars):
@@ -351,92 +381,3 @@ def how_far(n_species):
     avg_distance = (stars_per_lifeform / 0.0319) ** (1 / 2.7601)
     
     return round(avg_distance, 1)
-    
-    
-def randomise_constants(drake_range, timeframes_range):
-    """
-    elegant
-    """
-    global RS
-    global FP
-    global NE
-    global FL
-    global FI
-    global FC
-    global L
-    global YEARS_PLANETS_TO_HABITABLE
-    global YEARS_HABITABLE_TO_LIFE
-    global YEARS_LIFE_TO_COMPLEX_LIFE
-    global YEARS_COMPLEX_TO_INTELLIGENCE
-    global YEARS_INTELLIGENCE_TO_CULTURE
-    global YEARS_CULTURE_TO_TECH
-    global EXTINCTION_SIMPLE
-    global EXTINCTION_COMPLEX
-    global EXTINCTION_INTELLIGENT
-    global EXTINCTION_CULTURAL
-    global WEIBULL_SHAPE_PARAMETER
-    global WEIBULL_SCALE_PARAMETER
-    
-    RS = np.random.choice(drake_range['RS'])
-    FP = np.random.choice(drake_range['FP'])
-    NE = np.random.choice(drake_range['NE'])
-    FL = np.random.choice(drake_range['FL'])
-    FI = np.random.choice(drake_range['FI'])
-    FC = np.random.choice(drake_range['FC'])
-    L = np.random.choice(drake_range['L'])
-    YEARS_PLANETS_TO_HABITABLE = np.random.choice(timeframes_range['YEARS_PLANETS_TO_HABITABLE'])
-    YEARS_HABITABLE_TO_LIFE = np.random.choice(timeframes_range['YEARS_HABITABLE_TO_LIFE'])
-    YEARS_LIFE_TO_COMPLEX_LIFE = np.random.choice(timeframes_range['YEARS_LIFE_TO_COMPLEX_LIFE'])
-    YEARS_COMPLEX_TO_INTELLIGENCE = np.random.choice(timeframes_range['YEARS_COMPLEX_TO_INTELLIGENCE'])
-    YEARS_INTELLIGENCE_TO_CULTURE = np.random.choice(timeframes_range['YEARS_INTELLIGENCE_TO_CULTURE'])
-    YEARS_CULTURE_TO_TECH = np.random.choice(timeframes_range['YEARS_CULTURE_TO_TECH'])
-    EXTINCTION_SIMPLE = np.random.choice(timeframes_range['EXTINCTION_SIMPLE'])
-    EXTINCTION_COMPLEX = np.random.choice(timeframes_range['EXTINCTION_COMPLEX'])
-    EXTINCTION_INTELLIGENT = np.random.choice(timeframes_range['EXTINCTION_INTELLIGENT'])
-    EXTINCTION_CULTURAL = np.random.choice(timeframes_range['EXTINCTION_CULTURAL'])
-    WEIBULL_SHAPE_PARAMETER = np.random.choice(timeframes_range['WEIBULL_SHAPE_PARAMETER'])
-    WEIBULL_SCALE_PARAMETER = np.random.choice(timeframes_range['WEIBULL_SCALE_PARAMETER'])
-
-def reset_default_constants(drake_best, timeframes_best):
-    """
-    probably should have done a loop to keep it short, but ctrl H in notepad is fast
-    """
-    global RS
-    global FP
-    global NE
-    global FL
-    global FI
-    global FC
-    global L
-    global YEARS_PLANETS_TO_HABITABLE
-    global YEARS_HABITABLE_TO_LIFE
-    global YEARS_LIFE_TO_COMPLEX_LIFE
-    global YEARS_COMPLEX_TO_INTELLIGENCE
-    global YEARS_INTELLIGENCE_TO_CULTURE
-    global YEARS_CULTURE_TO_TECH
-    global EXTINCTION_SIMPLE
-    global EXTINCTION_COMPLEX
-    global EXTINCTION_INTELLIGENT
-    global EXTINCTION_CULTURAL
-    global WEIBULL_SHAPE_PARAMETER
-    global WEIBULL_SCALE_PARAMETER
-    
-    RS = drake_best['RS']
-    FP = drake_best['FP']
-    NE = drake_best['NE']
-    FL = drake_best['FL']
-    FI = drake_best['FI']
-    FC = drake_best['FC']
-    L = drake_best['L']
-    YEARS_PLANETS_TO_HABITABLE = timeframes_best['YEARS_PLANETS_TO_HABITABLE']
-    YEARS_HABITABLE_TO_LIFE = timeframes_best['YEARS_HABITABLE_TO_LIFE']
-    YEARS_LIFE_TO_COMPLEX_LIFE = timeframes_best['YEARS_LIFE_TO_COMPLEX_LIFE']
-    YEARS_COMPLEX_TO_INTELLIGENCE = timeframes_best['YEARS_COMPLEX_TO_INTELLIGENCE']
-    YEARS_INTELLIGENCE_TO_CULTURE = timeframes_best['YEARS_INTELLIGENCE_TO_CULTURE']
-    YEARS_CULTURE_TO_TECH = timeframes_best['YEARS_CULTURE_TO_TECH']
-    EXTINCTION_SIMPLE = timeframes_best['EXTINCTION_SIMPLE']
-    EXTINCTION_COMPLEX = timeframes_best['EXTINCTION_COMPLEX']
-    EXTINCTION_INTELLIGENT = timeframes_best['EXTINCTION_INTELLIGENT']
-    EXTINCTION_CULTURAL = timeframes_best['EXTINCTION_CULTURAL']
-    WEIBULL_SHAPE_PARAMETER = timeframes_best['WEIBULL_SHAPE_PARAMETER']
-    WEIBULL_SCALE_PARAMETER = timeframes_best['WEIBULL_SCALE_PARAMETER']
