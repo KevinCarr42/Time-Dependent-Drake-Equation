@@ -96,33 +96,69 @@ def new_habitable(params, num_planets, num_habitable_planets):
 
 
 # probability calcs whether something happens over a period
+# poisson doesn't seem to work well at inflection points
+# research and revise
 def prob_poisson(avg_time_to_happen, how_many_years_happened):
+    # """
+    # use poisson probably
+    # returns a ratio between 0 and 1
+    # results work for better known calcs, but fall apart for L
+    # probability of L is calculated in prob_L()
+    # """
+    # return 1 - poisson.cdf(k=1, mu=how_many_years_happened/avg_time_to_happen)
+    # """
+    # use poisson probably
+    #     what is the expectation of a poisson variable?
+    #     Lambda = E(X) = Var(X) = Mean = how_many_years_happened / avg_time_to_happen
+    # returns a ratio between 0 and 1
+    # """
+    # return how_many_years_happened / avg_time_to_happen
     """
-    use poisson probably
-    returns a ratio between 0 and 1
-    results work for better known calcs, but fall apart for L
-    probability of L is calculated in prob_L()
+    poisson is very glitchy when scaling around expected value
+    REVISED
+    mu is the average number of events per period
+        # events = how_many_years_happened/avg_time_to_happen
+            year / (years / event) => events
+    k is the number of events
     """
-    return 1 - poisson.cdf(k=1, mu=how_many_years_happened/avg_time_to_happen)
+    return poisson.pmf(k=1, mu=how_many_years_happened/avg_time_to_happen)
 
 
-# need a different probability distribution for L; if L may be between 
-# hundreds and millions of years, 0.0000000000000000% is not realistic 
-# for 1M yr survival. Weibull distributions are simple and easy to tune:
-# https://en.wikipedia.org/wiki/Weibull_distribution
-
-def prob_L(params, how_many_years_happened):
+def prob_weibull(params, how_many_years_happened):
     """
-    probability of technological life being extinct after how_many_years_happened
+    IMPORTANT: this won't work with different timesteps
+        need WEIBULL_SHAPE_PARAMETER=1 for prob_L(params, 1_000)**100 == prob_L(params, 100_000)
+        maybe use this for monte carlo simulation, but can't rely on it for simple calcs
+            otherwise time_step becomes an integral part of the calculation
     weibull distribution
-    constants from the CONSTANTS section above
+    constants from the CONSTANTS section above but shape=1
     """
+    return 1 - exp(-(how_many_years_happened/params['WEIBULL_SCALE_PARAMETER']))
+
+# ## PROBABALISTIC CALCS - INCOMPATIBLE FOR NOW ##
+
+# # need a different probability distribution for L; if L may be between 
+# # hundreds and millions of years, 0.0000000000000000% is not realistic 
+# # for 1M yr survival. Weibull distributions are simple and easy to tune:
+# # https://en.wikipedia.org/wiki/Weibull_distribution
+
+# def prob_L(params, how_many_years_happened):
+#     """
+#     IMPORTANT: this won't work with different timesteps
+#         need WEIBULL_SHAPE_PARAMETER=1 for prob_L(params, 1_000)**100 == prob_L(params, 100_000)
+#         maybe use this for monte carlo simulation, but can't rely on it for simple calcs
+#             otherwise time_step becomes an integral part of the calculation
+#     probability of technological life being extinct after how_many_years_happened
+#     weibull distribution
+#     constants from the CONSTANTS section above
+#     """
     
-    return 1 - exp(-(how_many_years_happened/params['WEIBULL_SCALE_PARAMETER'])**params['WEIBULL_SHAPE_PARAMETER'])
+#     return 1 - exp(-(how_many_years_happened/params['WEIBULL_SCALE_PARAMETER'])**params['WEIBULL_SHAPE_PARAMETER'])
     
 
 def transition(params, num_from, num_to, prob_of_transition):
     """
+    TODO: rename prob_of_transition, it's an average time
     the number of previous stage that develop into new stage
         eg, the number of habitable planets that evolve life
     doesn't track planets, just uses ratios to approximate expectations
@@ -160,7 +196,7 @@ def new_extinctions(params, num_stars, num_life, num_complex_life, num_intellige
     extinction_complex = num_complex_life * (base + prob_poisson(params['EXTINCTION_COMPLEX'], params['YEAR_STEPS']))
     extinction_intelligent = num_intelligent_life * (base + prob_poisson(params['EXTINCTION_INTELLIGENT'], params['YEAR_STEPS']))
     extinction_cultural = num_cultural_life * (base + prob_poisson(params['EXTINCTION_CULTURAL'], params['YEAR_STEPS']))
-    extinction_technological = N * prob_L(params, params['YEAR_STEPS'])
+    extinction_technological = N * (base + prob_poisson(params['L'], params['YEAR_STEPS']))
     
     return extinction_simple, extinction_complex, extinction_intelligent, extinction_cultural, extinction_technological
 
