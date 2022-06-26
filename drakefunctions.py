@@ -96,37 +96,16 @@ def new_habitable(params, num_planets, num_habitable_planets):
 
 
 # probability calcs whether something happens over a period
-# poisson doesn't seem to work well at inflection points
-# research and revise
 def prob_poisson(avg_time_to_happen, how_many_years_happened):
-    # """
-    # use poisson probably
-    # returns a ratio between 0 and 1
-    # results work for better known calcs, but fall apart for L
-    # probability of L is calculated in prob_L()
-    # """
-    # return 1 - poisson.cdf(k=1, mu=how_many_years_happened/avg_time_to_happen)
-    # """
-    # use poisson probably
-    #     what is the expectation of a poisson variable?
-    #     Lambda = E(X) = Var(X) = Mean = how_many_years_happened / avg_time_to_happen
-    # returns a ratio between 0 and 1
-    # """
-    # return how_many_years_happened / avg_time_to_happen
     """
-    poisson is very glitchy when scaling around expected value
-    REVISED
-    mu is the average number of events per period
-        # events = how_many_years_happened/avg_time_to_happen
-            year / (years / event) => events
-    k is the number of events
+    probability that more than 0 events will occur
     """
-    return poisson.pmf(k=1, mu=how_many_years_happened/avg_time_to_happen)
+    return poisson.sf(k=0, mu=how_many_years_happened/avg_time_to_happen)
 
 
 def prob_weibull(params, how_many_years_happened):
     """
-    IMPORTANT: this won't work with different timesteps
+    IMPORTANT: this won't work with different timesteps without WEIBULL_SHAPE_PARAMETER=1
         need WEIBULL_SHAPE_PARAMETER=1 for prob_L(params, 1_000)**100 == prob_L(params, 100_000)
         maybe use this for monte carlo simulation, but can't rely on it for simple calcs
             otherwise time_step becomes an integral part of the calculation
@@ -177,9 +156,11 @@ def new_technological(params, num_cultural_life, N):
         some proportion of cultural species transition or otherwise become
         extinct as a result of sharing a planet with a technological species
         P_tech_dominance is not a CONSTANT, it is treated as an input to TimeDependentDrake()
+    FC is the percentage of intelligent species that develop communication
+        used as a ratio to make sure growth rate is commutatitve
     """
     
-    return num_cultural_life * prob_poisson(params['YEARS_CULTURE_TO_TECH'], params['YEAR_STEPS'])
+    return num_cultural_life * prob_poisson(params['YEARS_CULTURE_TO_TECH'] / params['FC'], params['YEAR_STEPS'])
 
 
 def new_extinctions(params, num_stars, num_life, num_complex_life, num_intelligent_life, num_cultural_life, N):
@@ -196,7 +177,7 @@ def new_extinctions(params, num_stars, num_life, num_complex_life, num_intellige
     extinction_complex = num_complex_life * (base + prob_poisson(params['EXTINCTION_COMPLEX'], params['YEAR_STEPS']))
     extinction_intelligent = num_intelligent_life * (base + prob_poisson(params['EXTINCTION_INTELLIGENT'], params['YEAR_STEPS']))
     extinction_cultural = num_cultural_life * (base + prob_poisson(params['EXTINCTION_CULTURAL'], params['YEAR_STEPS']))
-    extinction_technological = N * (base + prob_poisson(params['L'], params['YEAR_STEPS']))
+    extinction_technological = N * prob_poisson(params['L'], params['YEAR_STEPS'])
     
     return extinction_simple, extinction_complex, extinction_intelligent, extinction_cultural, extinction_technological
 
