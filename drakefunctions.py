@@ -281,6 +281,12 @@ def TimeDependentDrake(params, output_year, P_tech_dominance, df_input="empty"):
             ).set_index(index)
         )
     
+    # maybe these are better names in general...
+    # they fit better, CONSIDER BLANKET ctrl+H
+    shorter_columns = ['n_star', 'n_planet', 'n_habitable', 'n_life', 'n_complex', 'n_int', 'n_cult',
+                       'N', 'N_extinct']  
+    history_of_life.columns = shorter_columns
+
     return history_of_life
     
 
@@ -298,8 +304,13 @@ def breakdown_by_year(params, N_1M_yr):
     for n in range(N_1M_yr):
         # random species characteristics
         year_birth = int(np.random.randint(0, params['YEAR_STEPS']-1))
-        year_death = int(year_birth + np.random.weibull(params['WEIBULL_SHAPE_PARAMETER']) * params['WEIBULL_SCALE_PARAMETER'])
         
+
+        ### THIS IS OUTDATED, CURRENTLY USING POISSON FOR L
+        year_death = int(year_birth + np.random.weibull(params['WEIBULL_SHAPE_PARAMETER']) * params['WEIBULL_SCALE_PARAMETER'])
+        ### THIS IS OUTDATED, CURRENTLY USING POISSON FOR L
+
+
         if year_death < params['YEAR_STEPS']:
             active_each_year.iloc[year_birth:year_death] += 1
         else:
