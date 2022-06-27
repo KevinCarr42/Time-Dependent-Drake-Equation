@@ -50,7 +50,29 @@ def Drake(params):
 ### Custom Functions ###
 
 # number of stars
-def star_formation(params, current_year, num_stars):
+
+# this function needs separating
+# def star_formation(params, current_year, num_stars):
+#     """
+#     star birth
+#     currently 30 times lower than at the start of the universe
+#     peaked 8 billion years ago
+#     approx rate calc assumes 30x at 10B ago, and Rs from now forward, linear interpolation
+    
+#     star death
+#     not based on astro physics, just used to balance the births vs death at num_galaxy
+#     """
+#     # star birth
+#     rate = params['RS'] * max(((params['MODERN_ERA'] - current_year) * 30) / params['MODERN_ERA'], 1)
+#     birth = rate * params['YEAR_STEPS']
+    
+#     # star death
+#     death = rate * params['YEAR_STEPS'] * num_stars / params['NUM_GALAXY']
+    
+#     return birth - death
+
+
+def star_birth(params, current_year, num_stars):
     """
     star birth
     currently 30 times lower than at the start of the universe
@@ -62,12 +84,24 @@ def star_formation(params, current_year, num_stars):
     """
     # star birth
     rate = params['RS'] * max(((params['MODERN_ERA'] - current_year) * 30) / params['MODERN_ERA'], 1)
-    birth = rate * params['YEAR_STEPS']
     
-    # star death
-    death = rate * params['YEAR_STEPS'] * num_stars / params['NUM_GALAXY']
+    return rate * params['YEAR_STEPS']
+
+
+def star_death(params, current_year, num_stars):
+    """
+    star birth
+    currently 30 times lower than at the start of the universe
+    peaked 8 billion years ago
+    approx rate calc assumes 30x at 10B ago, and Rs from now forward, linear interpolation
     
-    return birth - death
+    star death
+    not based on astro physics, just used to balance the births vs death at num_galaxy
+    """
+    # star birth
+    rate = params['RS'] * max(((params['MODERN_ERA'] - current_year) * 30) / params['MODERN_ERA'], 1)
+    
+    return rate * params['YEAR_STEPS'] * num_stars / params['NUM_GALAXY']
 
 
 # number of new planets
