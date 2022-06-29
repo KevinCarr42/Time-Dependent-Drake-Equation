@@ -8,8 +8,9 @@ Based on the famous Drake Equation, but not just a steady state solution.
 * stars formed between 2B and 6.5B yr ago contribute to our cosmic neighbours
 	* assuming Rstar constant by then, this puts us into steady state
 		* therefore the standard Drake Equation should work fine
-* work done by Abraham Loeb, Rafael A. Batista, David Sloanb does this better
-	* Relative Likelihood for Life as a Function of Cosmic Time
+* work done by Abraham Loeb, Rafael A. Batista, David Sloan does this better
+	* [Relative Likelihood for Life as a Function of Cosmic Time](https://arxiv.org/pdf/1606.08448.pdf)
+	* [When Did Life First Emerge in the Universe?](https://www.scientificamerican.com/article/when-did-life-first-emerge-in-the-universe/)
 	* this study shows we are likely at the start of lifespans
 	* I could redo this study with their life calculations
 * simulation didn't work very well, and adding rigor is outside of the capabilities of my computer
