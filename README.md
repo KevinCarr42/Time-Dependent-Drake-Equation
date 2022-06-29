@@ -2,6 +2,7 @@
 Based on the famous Drake Equation, but not just a steady state solution.
  
 # Summary
+* very rough, mostly abandoned
 * tech life forms between 2B and 6.5B yr after the star
 * 3.6% of potential habitable stars eventually yeild tech life
 * stars formed between 2B and 6.5B yr ago contribute to our cosmic neighbours
